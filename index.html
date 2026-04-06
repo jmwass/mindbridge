@@ -710,10 +710,11 @@ Write a lesson teaching "${topic}" through "${sel.interest}". Warm second-person
 function gamePrompt(topic,lesson){
   return `You are MindBridge. Student finished a lesson on "${topic}" framed around "${sel.interest}" for a ${sel.style} learner at ${sel.grade||'elementary'} level.
 Lesson: ${lesson.slice(0,500)}
-Create a mini-game. Choose best format for the topic. Return ONLY valid JSON, no markdown.
-QUIZ: {"type":"quiz","questions":[{"q":"...","options":["A","B","C","D"],"answer":0,"feedback":"..."},{"q":"...","options":[...],"answer":1,"feedback":"..."},{"q":"...","options":[...],"answer":2,"feedback":"..."}]}
-FILL_BLANK: {"type":"fill_blank","items":[{"sentence":"The ___ equals 12.","blank":"answer","hint":"..."},{"sentence":"...","blank":"...","hint":"..."},{"sentence":"...","blank":"...","hint":"..."}]}
-ADVENTURE: {"type":"adventure","intro":"...","choices":[{"text":"...","outcome":"...","correct":true},{"text":"...","outcome":"...","correct":false},{"text":"...","outcome":"...","correct":false}]}
+Create a mini-game. Choose best format for the topic. Return ONLY valid JSON, no markdown, no extra text.
+QUIZ: {"type":"quiz","questions":[{"q":"question text","options":["A","B","C","D"],"answer":0,"feedback":"explanation"},{"q":"...","options":[...],"answer":1,"feedback":"..."},{"q":"...","options":[...],"answer":2,"feedback":"..."}]}
+FILL_BLANK: {"type":"fill_blank","items":[{"sentence":"The ___ equals 12.","blank":"product","hint":"the result of multiplication"},{"sentence":"...","blank":"...","hint":"..."},{"sentence":"...","blank":"...","hint":"..."}]}
+ADVENTURE: {"type":"adventure","intro":"opening scene","choices":[{"text":"correct choice text","outcome":"explanation of why this was right and what you learned","correct":true},{"text":"wrong choice text","outcome":"explanation of why this was wrong","correct":false},{"text":"wrong choice text","outcome":"explanation of why this was wrong","correct":false}]}
+IMPORTANT: In ADVENTURE, exactly one choice must have "correct":true and the others must have "correct":false. The "outcome" field must always be present on every choice.
 Weave "${sel.interest}" throughout. Fun and age-appropriate.`;
 }
 
@@ -925,15 +926,20 @@ function renderGame(game){
 
   }else if(game.type==='adventure'){
     window._game=game;
+    // ensure at least one choice is marked correct
+    const hasCorrect=game.choices.some(c=>c.correct===true);
+    if(!hasCorrect) game.choices[0].correct=true;
     wrap.innerHTML=`<div class="adv-story">${game.intro}</div><div style="font-size:12px;color:var(--muted);margin-bottom:12px;font-weight:600">What do you do?</div><div class="adv-choices">${game.choices.map((c,i)=>`<button class="adv-btn" onclick="pickAdv(${i})"><span class="adv-arrow">→</span>${c.text}</button>`).join('')}</div><div id="advRes"></div>`;
     window.pickAdv=i=>{
-      const c=game.choices[i];gameCorrect=c.correct?1:0;gameScore=c.correct?'Correct on adventure':'Incorrect on adventure';
+      const c=game.choices[i];
+      const outcomeText=c.outcome||c.result||c.explanation||c.text||'';
+      gameCorrect=c.correct?1:0;gameScore=c.correct?'Correct on adventure':'Incorrect on adventure';
       if(c.correct){launchConfetti();sfx.levelUp();setMascotMood('celebrate',"Perfect choice! 🎉");addXP(100);}
       else{sfx.wrong();setMascotMood('sad',"Not quite… try again!");addXP(20);}
       document.querySelectorAll('.adv-btn').forEach(b=>b.disabled=true);
       const res=document.getElementById('advRes');
       res.style.cssText='margin-top:16px;padding:16px;border-radius:var(--radius);background:'+(c.correct?'var(--green-light)':'#FCEBEB')+';border-left:3px solid '+(c.correct?'var(--green-mid)':'#E24B4A')+';font-size:14px;line-height:1.75;white-space:pre-wrap';
-      res.innerHTML='<strong>'+(c.correct?'🏆 Great choice!':'💡 Not quite...')+'</strong><br><br>'+c.outcome+`<br><br><button class="cta" onclick="goToAnalytics()" style="margin-top:8px">See my results 📊</button><button class="cta-secondary" onclick="renderGame(window._game)">🔄 Try again</button>`;
+      res.innerHTML='<strong>'+(c.correct?'🏆 Great choice!':'💡 Not quite...')+'</strong><br><br>'+outcomeText+`<br><br><button class="cta" onclick="goToAnalytics()" style="margin-top:8px">See my results 📊</button><button class="cta-secondary" onclick="renderGame(window._game)">🔄 Try again</button>`;
     };
   }
 }
