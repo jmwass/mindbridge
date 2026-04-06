@@ -688,13 +688,12 @@ function rotateMessages(elId,msgs,interval){
 async function callAPI(prompt,systemPrompt,fileData,fileType){
   const fullPrompt=(systemPrompt?systemPrompt+'\n\n':'')+prompt;
   const parts=[{text:fullPrompt}];
-  if(fileData){
-    parts.unshift({inline_data:{mime_type:fileType,data:fileData}});
-  }
-  const body={contents:[{parts}]};
-  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(fileData) parts.unshift({inline_data:{mime_type:fileType,data:fileData}});
+  const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts}]})});
   const d=await r.json();
-  return d.text||'';
+  console.log('API response:',d);
+  const text=d.text||d?.candidates?.[0]?.content?.parts?.[0]?.text||'';
+  return text;
 }
 
 function lessonPrompt(topic){
