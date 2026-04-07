@@ -213,12 +213,12 @@ input[type=text]::placeholder{color:var(--muted)}
 #askToggleBtn.hidden{display:none}
 
 /* MASCOT */
-#mascot{position:fixed;bottom:20px;right:20px;z-index:997;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none}
+#mascot{position:fixed;bottom:20px;right:20px;z-index:997;display:flex;flex-direction:column;align-items:center;gap:6px;pointer-events:none;transition:bottom 0.3s,right 0.3s}
 #mascotBubble{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--text);max-width:160px;text-align:center;line-height:1.4;box-shadow:0 4px 16px rgba(0,0,0,0.08);opacity:0;transform:translateY(6px);transition:opacity 0.3s,transform 0.3s;position:relative}
 #mascotBubble::after{content:'';position:absolute;bottom:-7px;left:50%;transform:translateX(-50%);border:7px solid transparent;border-top-color:var(--border);border-bottom:none}
 #mascotBubble::before{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--card);border-bottom:none;z-index:1}
 #mascotBubble.show{opacity:1;transform:translateY(0)}
-#mascotFace{width:64px;height:64px;cursor:pointer;pointer-events:all;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.12));transition:transform 0.2s}
+#mascotFace{width:80px;height:80px;cursor:pointer;pointer-events:all;filter:drop-shadow(0 4px 8px rgba(0,0,0,0.12));transition:transform 0.2s}
 #mascotFace:hover{transform:scale(1.08)}
 #mascotFace:active{transform:scale(0.95)}
 
@@ -277,8 +277,7 @@ input[type=text]::placeholder{color:var(--muted)}
     <rect id="armR" x="45" y="30" width="13" height="6" rx="3" fill="#3B6D11" transform-origin="45 33"/>
     <rect x="21" y="50" width="9" height="6" rx="3" fill="#27500A"/>
     <rect x="34" y="50" width="9" height="6" rx="3" fill="#27500A"/>
-    <text x="26" y="45" font-size="8" fill="#9FE1CB" text-anchor="middle">✦</text>
-    <text x="38" y="43" font-size="6" fill="#9FE1CB" text-anchor="middle">✦</text>
+    <text x="32" y="45" font-size="8" fill="#9FE1CB" text-anchor="middle">✦</text>
   </svg>
 </div>
 
@@ -481,6 +480,7 @@ const sfx={
 /* ── XP ── */
 function addXP(pts){
   xp+=pts;
+  brixbyJump(2);
   const b=document.getElementById('xpBadge');
   b.style.display='block';
   b.textContent=`⭐ ${xp} XP`;
@@ -715,19 +715,28 @@ function gamePrompt(topic,lesson){
     '9th–12th grade':'Ask challenging analytical questions requiring real understanding. Wrong answers should reflect common misconceptions. Include at least one question requiring critical thinking.',
     'college or adult level':'Ask sophisticated questions involving analysis, interpretation, and nuanced understanding. All wrong answers must be plausible to someone who half-understood the material.'
   };
+  const quizCount={
+    'K-2nd grade':3,
+    '3rd–5th grade':5,
+    '6th–8th grade':7,
+    '9th–12th grade':10,
+    'college or adult level':10
+  };
+  const numQ=quizCount[sel.grade]||5;
   return `You are MindBridge. Student finished a lesson on "${topic}" framed around "${sel.interest}" for a ${sel.style} learner at ${sel.grade||'elementary'} level.
 Lesson: ${lesson.slice(0,600)}
 Rigor guidance: ${gradeRigor[sel.grade]||gradeRigor['3rd–5th grade']}
 
 Create a challenging, engaging mini-game. Choose the best format. Return ONLY valid JSON, no markdown, no extra text.
 
-CRITICAL: 
+CRITICAL:
+- If you choose QUIZ, you MUST include exactly ${numQ} questions — no more, no less
 - Questions must test real understanding, not just surface recall
 - Wrong answer options must be genuinely plausible — never obviously wrong
 - Weave "${sel.interest}" into the questions and scenarios naturally and specifically
 - Match difficulty to ${sel.grade||'elementary'} level rigor
 
-QUIZ: {"type":"quiz","questions":[{"q":"question text","options":["A","B","C","D"],"answer":0,"feedback":"explanation of why this is correct and others are wrong"},{"q":"...","options":[...],"answer":1,"feedback":"..."},{"q":"...","options":[...],"answer":2,"feedback":"..."}]}
+QUIZ: {"type":"quiz","questions":[{"q":"question text","options":["A","B","C","D"],"answer":0,"feedback":"explanation of why this is correct and others are wrong"}, ... repeat for exactly ${numQ} questions total]}
 FILL_BLANK: {"type":"fill_blank","items":[{"sentence":"The ___ equals 12.","blank":"product","hint":"the result of multiplication"},{"sentence":"...","blank":"...","hint":"..."},{"sentence":"...","blank":"...","hint":"..."}]}
 ADVENTURE: {"type":"adventure","intro":"opening scene using ${sel.interest} as the setting","choices":[{"text":"correct choice text","outcome":"explanation of why this was right and what concept it connects to","correct":true},{"text":"wrong choice text","outcome":"explanation of why this was wrong and what the right answer would be","correct":false},{"text":"wrong choice text","outcome":"explanation of why this was wrong","correct":false}]}
 IMPORTANT: In ADVENTURE, exactly one choice must have "correct":true. The "outcome" field must always be a non-empty string on every choice.`;
@@ -861,6 +870,7 @@ function updateRaBtn(){const b=document.getElementById('raBtn');if(!b) return;if
 
 /* ── CONFETTI ── */
 function launchConfetti(){
+  brixbySpin();
   const canvas=document.getElementById('confettiCanvas');
   canvas.style.display='block';canvas.width=window.innerWidth;canvas.height=window.innerHeight;
   const ctx=canvas.getContext('2d');
