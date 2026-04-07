@@ -708,38 +708,11 @@ Write a lesson teaching "${topic}" through "${sel.interest}". Warm second-person
 }
 
 function gamePrompt(topic,lesson){
-  const gradeRigor={
-    'K-2nd grade':'Keep questions very simple, one clear concept per question, basic recall only.',
-    '3rd–5th grade':'Mix recall with simple reasoning. Wrong answers should be plausible, not obviously wrong.',
-    '6th–8th grade':'Include conceptual and analytical questions. Wrong answers must be genuinely tempting. Ask about causes, effects, and relationships.',
-    '9th–12th grade':'Ask challenging analytical questions requiring real understanding. Wrong answers should reflect common misconceptions. Include at least one question requiring critical thinking.',
-    'college or adult level':'Ask sophisticated questions involving analysis, interpretation, and nuanced understanding. All wrong answers must be plausible to someone who half-understood the material.'
-  };
-  const quizCount={
-    'K-2nd grade':3,
-    '3rd–5th grade':5,
-    '6th–8th grade':7,
-    '9th–12th grade':10,
-    'college or adult level':10
-  };
+  const quizCount={'K-2nd grade':3,'3rd–5th grade':5,'6th–8th grade':7,'9th–12th grade':10,'college or adult level':10};
   const numQ=quizCount[sel.grade]||5;
-  return `You are MindBridge. Student finished a lesson on "${topic}" framed around "${sel.interest}" for a ${sel.style} learner at ${sel.grade||'elementary'} level.
-Lesson: ${lesson.slice(0,600)}
-Rigor guidance: ${gradeRigor[sel.grade]||gradeRigor['3rd–5th grade']}
-
-Create a challenging, engaging mini-game. Choose the best format. Return ONLY valid JSON, no markdown, no extra text.
-
-CRITICAL:
-- If you choose QUIZ, you MUST include exactly ${numQ} questions — no more, no less
-- Questions must test real understanding, not just surface recall
-- Wrong answer options must be genuinely plausible — never obviously wrong
-- Weave "${sel.interest}" into the questions and scenarios naturally and specifically
-- Match difficulty to ${sel.grade||'elementary'} level rigor
-
-QUIZ: {"type":"quiz","questions":[{"q":"question text","options":["A","B","C","D"],"answer":0,"feedback":"explanation of why this is correct and others are wrong"}, ... repeat for exactly ${numQ} questions total]}
-FILL_BLANK: {"type":"fill_blank","items":[{"sentence":"The ___ equals 12.","blank":"product","hint":"the result of multiplication"},{"sentence":"...","blank":"...","hint":"..."},{"sentence":"...","blank":"...","hint":"..."}]}
-ADVENTURE: {"type":"adventure","intro":"opening scene using ${sel.interest} as the setting","choices":[{"text":"correct choice text","outcome":"explanation of why this was right and what concept it connects to","correct":true},{"text":"wrong choice text","outcome":"explanation of why this was wrong and what the right answer would be","correct":false},{"text":"wrong choice text","outcome":"explanation of why this was wrong","correct":false}]}
-IMPORTANT: In ADVENTURE, exactly one choice must have "correct":true. The "outcome" field must always be a non-empty string on every choice.`;
+  return `Create a ${numQ}-question quiz about "${topic}" using "${sel.interest}" as the theme. Return ONLY valid JSON:
+{"type":"quiz","questions":[{"q":"question","options":["A","B","C","D"],"answer":0,"feedback":"why correct"}]}
+Rules: exactly ${numQ} questions, plausible wrong answers, weave ${sel.interest} in naturally, match ${sel.grade} difficulty.`;
 }
 
 function parentPrompt(topic){
@@ -779,7 +752,7 @@ async function goToGame(){
   const msgs=[`Designing your mini-game…`,`Setting up the ${sel.interest} challenge…`,`Building something fun…`,`Almost time to play…`];
   const t=rotateMessages('gameLoadingMsg',msgs);
   try{
-    const raw=await callAPI(gamePrompt(currentTopic,currentLesson));
+    const raw=await callAPI(gamePrompt(currentTopic,currentLesson),null,null,null,2000);
     clearInterval(t);
     const game=JSON.parse(raw.replace(/```json|```/g,'').trim());
     document.getElementById('gameSubline').textContent=`${currentTopic} · ${sel.interest} edition`;
