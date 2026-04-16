@@ -738,13 +738,19 @@ async function goToLesson(){
     const raw=await callAPI(lessonPrompt(topic),null,uploadedData,uploadedFile?.type);
     clearInterval(t);
     currentLesson=raw.replace(/---+/g,'').replace(/##+ ?/g,'').replace(/\*\*/g,'').replace(/\n{3,}/g,'\n\n').trim();
-    document.getElementById('lessonMeta').innerHTML=[sel.style,sel.interest,sel.grade,...(uploadedFile?['📎 '+uploadedFile.name.slice(0,20)+'…']:[])]  .map(x=>`<div class="lm-pill">${x}</div>`).join('');
+    if(!currentLesson){ alert('No lesson content received. Please try again.'); showPage('pageSetup',false); return; }
+    document.getElementById('lessonMeta').innerHTML=[sel.style,sel.interest,sel.grade,...(uploadedFile?['📎 '+uploadedFile.name.slice(0,20)+'…']:[])] .map(x=>`<div class="lm-pill">${x}</div>`).join('');
     document.getElementById('lessonHeadline').textContent=userName?`${userName}'s lesson on ${topic}`:`Your lesson on ${topic}`;
     document.getElementById('lessonSubline').textContent=`${sel.interest}-themed · ${sel.style} style`;
     document.getElementById('lessonBody').textContent=currentLesson;
     addXP(50);sfx.levelUp();
     showPage('pageLesson',true);
-  }catch(e){alert('Something went wrong. Please try again.');showPage('pageSetup',false);clearInterval(t);}
+  }catch(e){
+    clearInterval(t);
+    console.error('Lesson error:',e);
+    alert('Something went wrong: '+e.message+'. Please try again.');
+    showPage('pageSetup',false);
+  }
 }
 
 async function goToGame(){
