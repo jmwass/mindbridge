@@ -752,7 +752,7 @@ async function goToGame(){
   const msgs=[`Designing your mini-game…`,`Setting up the ${sel.interest} challenge…`,`Building something fun…`,`Almost time to play…`];
   const t=rotateMessages('gameLoadingMsg',msgs);
   try{
-    const raw=await callAPI(gamePrompt(currentTopic),null,null,null,800);
+    const raw=await callAPI(gamePrompt(currentTopic),null,null,null,600);
     clearInterval(t);
     const game=JSON.parse(raw.replace(/```json|```/g,'').trim());
     document.getElementById('gameSubline').textContent=`${currentTopic} · ${sel.interest} edition`;
