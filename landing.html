@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindBridge — Learning Built for You</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#3B6D11;--green-mid:#639922;--green-dark:#27500A;
+  --green-light:#EAF3DE;--accent:#9FE1CB;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#0f1a0a;color:#fff;min-height:100vh;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 40px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,26,10,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06)}
+.nav-logo{font-size:1.3rem;font-weight:800;letter-spacing:-0.5px;color:#fff}
+.nav-logo span{color:var(--accent)}
+.nav-cta{background:var(--green-mid);color:#fff;border:none;border-radius:50px;padding:10px 24px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none}
+.nav-cta:hover{background:#7ab52a;transform:scale(1.03)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative;overflow:hidden}
+
+/* BG GLOW */
+.hero::before{content:'';position:absolute;top:20%;left:50%;transform:translateX(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(99,153,34,0.18) 0%,transparent 70%);pointer-events:none}
+.hero::after{content:'';position:absolute;bottom:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(159,225,203,0.08) 0%,transparent 70%);pointer-events:none}
+
+/* BADGE */
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(99,153,34,0.15);border:1px solid rgba(99,153,34,0.4);border-radius:50px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:28px}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(1.3)}}
+
+/* HEADLINE */
+.hero h1{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;line-height:1.1;letter-spacing:-2px;margin-bottom:24px;max-width:900px}
+.hero h1 .line2{color:var(--accent)}
+.hero h1 .line3{color:rgba(255,255,255,0.35)}
+
+/* SUBHEAD */
+.hero-sub{font-size:clamp(1rem,2.5vw,1.25rem);color:rgba(255,255,255,0.55);line-height:1.7;max-width:540px;margin:0 auto 48px}
+.hero-sub strong{color:rgba(255,255,255,0.85);font-weight:600}
+
+/* CTA */
+.cta-group{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:64px}
+.btn-primary{background:var(--green-mid);color:#fff;border:none;border-radius:50px;padding:18px 40px;font-size:1.05rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:#7ab52a;transform:translateY(-2px);box-shadow:0 8px 32px rgba(99,153,34,0.4)}
+.btn-secondary{color:rgba(255,255,255,0.6);font-size:0.9rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:6px;transition:color 0.2s}
+.btn-secondary:hover{color:#fff}
+
+/* FEATURE PILLS */
+.feature-pills{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:80px}
+.pill{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:50px;padding:8px 18px;font-size:13px;color:rgba(255,255,255,0.6);display:flex;align-items:center;gap:7px}
+.pill-icon{font-size:15px}
+
+/* APP PREVIEW */
+.preview-wrap{position:relative;max-width:900px;width:100%;margin:0 auto}
+.preview-glow{position:absolute;inset:-20px;background:radial-gradient(ellipse at 50% 0%,rgba(99,153,34,0.25) 0%,transparent 60%);pointer-events:none}
+.preview-frame{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:20px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.5)}
+.preview-bar{background:rgba(255,255,255,0.06);padding:12px 20px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.dot-r{width:10px;height:10px;border-radius:50%;background:#ff5f57}
+.dot-y{width:10px;height:10px;border-radius:50%;background:#febc2e}
+.dot-g{width:10px;height:10px;border-radius:50%;background:#28c840}
+.preview-url{flex:1;text-align:center;font-size:12px;color:rgba(255,255,255,0.3)}
+.preview-inner{padding:40px;display:flex;flex-direction:column;align-items:center;gap:20px}
+.preview-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px 24px;width:100%;max-width:500px}
+.pc-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.35);margin-bottom:10px}
+.pc-chips{display:flex;gap:8px;flex-wrap:wrap}
+.pc-chip{background:rgba(99,153,34,0.2);border:1px solid rgba(99,153,34,0.4);border-radius:50px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--accent)}
+.pc-chip.active{background:var(--green-mid);border-color:var(--green-mid);color:#fff}
+.lesson-preview{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:20px 24px;width:100%;max-width:500px}
+.lp-title{font-size:14px;font-weight:700;color:#fff;margin-bottom:8px}
+.lp-text{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.7}
+.lp-tag{display:inline-block;background:rgba(99,153,34,0.15);border-radius:4px;padding:2px 8px;font-size:11px;color:var(--accent);margin-right:6px;margin-bottom:6px}
+.brixby-preview{position:absolute;bottom:-10px;right:20px;font-size:48px;filter:drop-shadow(0 4px 12px rgba(0,0,0,0.4));animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* STATS */
+.stats{display:flex;gap:48px;justify-content:center;flex-wrap:wrap;padding:60px 24px;border-top:1px solid rgba(255,255,255,0.06);border-bottom:1px solid rgba(255,255,255,0.06);margin:0 40px}
+.stat{text-align:center}
+.stat-val{font-size:2.5rem;font-weight:800;color:var(--accent);letter-spacing:-1px}
+.stat-label{font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;font-weight:500}
+
+/* FEATURES */
+.features{padding:80px 24px;max-width:1000px;margin:0 auto}
+.features-title{text-align:center;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-1px;margin-bottom:48px}
+.features-title span{color:var(--accent)}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.feature-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;transition:all 0.2s}
+.feature-card:hover{background:rgba(99,153,34,0.08);border-color:rgba(99,153,34,0.3);transform:translateY(-2px)}
+.fc-icon{font-size:2rem;margin-bottom:12px}
+.fc-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.fc-desc{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.6}
+
+/* BOTTOM CTA */
+.bottom-cta{text-align:center;padding:80px 24px 100px}
+.bottom-cta h2{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;letter-spacing:-1.5px;margin-bottom:16px}
+.bottom-cta h2 span{color:var(--accent)}
+.bottom-cta p{color:rgba(255,255,255,0.45);margin-bottom:36px;font-size:1rem}
+
+/* FOOTER */
+footer{text-align:center;padding:24px;border-top:1px solid rgba(255,255,255,0.06);font-size:13px;color:rgba(255,255,255,0.2)}
+footer span{color:var(--accent)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Mind<span>Bridge</span></div>
+  <a class="nav-cta" href="./app">Try it free →</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge"><span class="badge-dot"></span>AI-Powered Learning</div>
+  <h1>
+    Learning that actually<br>
+    <span class="line2">fits your brain.</span><br>
+    <span class="line3">Not the other way around.</span>
+  </h1>
+  <p class="hero-sub">MindBridge uses AI to teach <strong>any subject</strong> through the lens of what you love — personalized to your learning style, interest, and grade level.</p>
+
+  <div class="cta-group">
+    <a class="btn-primary" href="./app">Start Learning Free ✨</a>
+    <a class="btn-secondary" href="#features">See how it works ↓</a>
+  </div>
+
+  <div class="feature-pills">
+    <div class="pill"><span class="pill-icon">⚡</span>ADHD-friendly</div>
+    <div class="pill"><span class="pill-icon">🔤</span>Dyslexia support</div>
+    <div class="pill"><span class="pill-icon">🎮</span>Interest-based</div>
+    <div class="pill"><span class="pill-icon">🤖</span>AI-powered</div>
+    <div class="pill"><span class="pill-icon">👨‍👩‍👧</span>Parent summaries</div>
+    <div class="pill"><span class="pill-icon">🎯</span>Any grade level</div>
+  </div>
+
+  <div class="preview-wrap">
+    <div class="preview-glow"></div>
+    <div class="preview-frame">
+      <div class="preview-bar">
+        <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
+        <div class="preview-url">mindbridgesyr.vercel.app</div>
+      </div>
+      <div class="preview-inner">
+        <div class="preview-card">
+          <div class="pc-label">Your learning profile</div>
+          <div class="pc-chips">
+            <div class="pc-chip active">⚡ ADHD / Focus</div>
+            <div class="pc-chip active">⛏️ Minecraft</div>
+            <div class="pc-chip active">3rd–5th grade</div>
+            <div class="pc-chip">Multiplication</div>
+          </div>
+        </div>
+        <div class="lesson-preview" style="position:relative">
+          <div class="lp-title">Jonah's lesson on Multiplication</div>
+          <div style="margin-bottom:8px">
+            <span class="lp-tag">Minecraft-themed</span>
+            <span class="lp-tag">ADHD style</span>
+          </div>
+          <div class="lp-text">You just spawned into a new world and need to craft 4 sets of 6 wooden planks to build your base. To figure out how many planks you need total, you're going to use multiplication — one of the most powerful tools in your crafting kit...</div>
+          <div class="brixby-preview">🐸</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="stats">
+  <div class="stat"><div class="stat-val">6</div><div class="stat-label">Learning styles supported</div></div>
+  <div class="stat"><div class="stat-val">12+</div><div class="stat-label">Interest categories</div></div>
+  <div class="stat"><div class="stat-val">5</div><div class="stat-label">Grade levels</div></div>
+  <div class="stat"><div class="stat-val">∞</div><div class="stat-label">Topics to explore</div></div>
+</div>
+
+<section class="features" id="features">
+  <h2 class="features-title">Built for every kind of <span>learner</span></h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="fc-icon">🧠</div>
+      <div class="fc-title">Detects your learning style</div>
+      <div class="fc-desc">A 4-question quiz figures out whether you're ADHD, dyslexic, visual, verbal, or anything in between — then adapts everything to match.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon">⛏️</div>
+      <div class="fc-title">Teaches through your interests</div>
+      <div class="fc-desc">Love Minecraft? Soccer? Lip gloss? MindBridge weaves your passion into every concept so learning actually sticks.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon">🎮</div>
+      <div class="fc-title">AI-generated games</div>
+      <div class="fc-desc">After every lesson, Brixby generates a personalized quiz, fill-in-the-blank, or story adventure to test what you learned.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon">👨‍👩‍👧</div>
+      <div class="fc-title">Parent summaries</div>
+      <div class="fc-desc">Every session ends with a plain-English parent recap — what was taught, why it worked, and dinner-table conversation starters.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon">🔊</div>
+      <div class="fc-title">Read aloud mode</div>
+      <div class="fc-desc">Every lesson can be read aloud at adjustable speeds — a game changer for dyslexic learners and young readers.</div>
+    </div>
+    <div class="feature-card">
+      <div class="fc-icon">🤖</div>
+      <div class="fc-title">Ask Brixby anything</div>
+      <div class="fc-desc">Stuck on something? Brixby is always one tap away to explain any concept in plain language, using your interests.</div>
+    </div>
+  </div>
+</section>
+
+<section class="bottom-cta">
+  <h2>Ready to learn <span>your way?</span></h2>
+  <p>No account needed. Just tell us how you learn and what you love.</p>
+  <a class="btn-primary" href="./app">Start Learning Free ✨</a>
+</section>
+
+<footer>
+  Built with ❤️ for non-traditional learners &nbsp;·&nbsp; <span>MindBridge</span> &nbsp;·&nbsp; Powered by AI
+</footer>
+
+</body>
+</html>
