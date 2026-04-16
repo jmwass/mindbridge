@@ -480,7 +480,7 @@ const sfx={
 /* ── XP ── */
 function addXP(pts){
   xp+=pts;
-  brixbyJump(2);
+  if(typeof brixbyJump==='function') brixbyJump(2);
   const b=document.getElementById('xpBadge');
   b.style.display='block';
   b.textContent=`⭐ ${xp} XP`;
@@ -849,7 +849,7 @@ function updateRaBtn(){const b=document.getElementById('raBtn');if(!b) return;if
 
 /* ── CONFETTI ── */
 function launchConfetti(){
-  brixbySpin();
+  if(typeof brixbySpin==='function') brixbySpin();
   const canvas=document.getElementById('confettiCanvas');
   canvas.style.display='block';canvas.width=window.innerWidth;canvas.height=window.innerHeight;
   const ctx=canvas.getContext('2d');
