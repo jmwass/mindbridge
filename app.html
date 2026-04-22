@@ -634,6 +634,11 @@ function startIdleAnimation(){
     else if(roll<0.83){brixbyNervousShake();}
     else if(roll<0.87){brixbyPeek();}
     else if(roll<0.91){brixbyDizzy();}
+    else if(roll<0.94){brixbyBackflip();}
+    else if(roll<0.96){brixbyMoonwalk();}
+    else if(roll<0.97){brixbyShrinkGrow();}
+    else if(roll<0.98){brixbyFloat();}
+    else if(roll<0.99){brixbyBounceWall();}
   },10000);
 }
 function brixbySit(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('idle',"Taking a break... 😌");let t=0;const sit=setInterval(()=>{t+=0.08;const squat=Math.min(t,1);face.style.transform=`scaleY(${1-squat*0.2}) scaleX(${1+squat*0.15}) translateY(${squat*8}px)`;if(t>=1){clearInterval(sit);setTimeout(()=>{let t2=0;const stand=setInterval(()=>{t2+=0.08;const rise=Math.min(t2,1);face.style.transform=`scaleY(${0.8+rise*0.2}) scaleX(${1.15-rise*0.15}) translateY(${(1-rise)*8}px)`;if(t2>=1){clearInterval(stand);face.style.transform='';brixbyActionLock=false;}},30);},3000);}},30);}
@@ -655,9 +660,19 @@ function brixbyDance(){const face=getFaceEl();const armL=document.getElementById
 function brixbyTrip(){const face=getFaceEl();if(!face||brixbyActionLock)return;brixbyActionLock=true;setMascotMood('nervous','Whoa! 😵');let t=0;const trip=setInterval(()=>{t+=0.15;face.style.transform=`rotate(${Math.min(t*60,90)}deg) translateY(${t*8}px)`;if(t>=1.5){clearInterval(trip);setTimeout(()=>{face.style.transform='';setMascotMood('happy','I meant to do that! 😄');brixbyActionLock=false;},800);}},30);}
 function brixbyRunOff(){if(brixbyActionLock||brixbyWalking)return;brixbyActionLock=true;const el=getMascotEl();const face=getFaceEl();if(brixbyX===null)brixbyX=window.innerWidth-100;setMascotMood('excited','BRB! 🏃');face.style.transform='scaleX(1)';el.style.transition='left 0.6s ease-in';setBrixbyPos(window.innerWidth+100);setTimeout(()=>{el.style.transition='none';setBrixbyPos(-100);face.style.transform='scaleX(1)';setTimeout(()=>{el.style.transition='left 0.8s ease-out';setBrixbyPos(window.innerWidth-100);setTimeout(()=>{el.style.left='auto';el.style.right='20px';el.style.transition='none';brixbyX=window.innerWidth-100;face.style.transform='';setMascotMood('happy',"I'm back! 😄");brixbyActionLock=false;},900);},100);},700);}
 function brixbyLookAround(){const pL=document.getElementById('pupilL');const pR=document.getElementById('pupilR');if(!pL)return;const positions=[[-2,0],[2,0],[0,-1],[0,1],[-2,-1],[2,1],[0,0]];let i=0;const look=setInterval(()=>{const p=positions[i%positions.length];pL.setAttribute('cx',25+p[0]);pL.setAttribute('cy',21+p[1]);pR.setAttribute('cx',41+p[0]);pR.setAttribute('cy',21+p[1]);i++;if(i>=positions.length){clearInterval(look);}},200);}
+function brixbyBackflip(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('excited',"Backflip! 🤸");let t=0;const flip=setInterval(()=>{t+=0.12;const jump=Math.sin(t*Math.PI)*-40;const rot=t*360;face.style.transform=`translateY(${jump}px) rotate(${rot}deg) scale(${1+Math.sin(t*Math.PI)*0.2})`;if(t>=1){clearInterval(flip);face.style.transform='';brixbyActionLock=false;}},16);}
+
+function brixbyMoonwalk(){if(brixbyActionLock||brixbyWalking)return;brixbyActionLock=true;brixbyWalking=true;const face=getFaceEl();const el=getMascotEl();if(brixbyX===null)brixbyX=window.innerWidth-100;setMascotMood('happy',"Hee-hee! 🕺");face.style.transform='scaleX(1)';const dist=-200;const targetX=Math.max(20,Math.min(window.innerWidth-100,brixbyX+dist));el.style.transition='left 2s linear';setBrixbyPos(targetX);let t=0;const glide=setInterval(()=>{t+=0.3;face.style.transform=`scaleX(1) translateY(${Math.sin(t)*-3}px)`;},30);setTimeout(()=>{clearInterval(glide);face.style.transform='';brixbyWalking=false;brixbyActionLock=false;},2000);}
+
+function brixbyShrinkGrow(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('nervous',"Shrinking! 😬");let t=0;const sg=setInterval(()=>{t+=0.04;const scale=1-Math.sin(t*Math.PI)*0.7;face.style.transform=`scale(${Math.max(0.1,scale)})`;if(t>=1){clearInterval(sg);face.style.transform='scale(1)';setMascotMood('excited',"I'm back! 💥");brixbyActionLock=false;}},20);}
+
+function brixbyFloat(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('happy',"Floating... 🌟");let t=0;const fl=setInterval(()=>{t+=0.03;face.style.transform=`translateY(${Math.sin(t*Math.PI)*-30}px) rotate(${Math.sin(t*Math.PI*2)*10}deg)`;if(t>=1){clearInterval(fl);face.style.transform='';brixbyActionLock=false;}},20);}
+
+function brixbyBounceWall(){if(brixbyActionLock||brixbyWalking)return;brixbyActionLock=true;brixbyWalking=true;const face=getFaceEl();const el=getMascotEl();if(brixbyX===null)brixbyX=window.innerWidth-100;setMascotMood('excited',"Wheee! 💨");face.style.transform='scaleX(1)';el.style.transition='left 0.4s ease-in';setBrixbyPos(window.innerWidth-100);setTimeout(()=>{setMascotMood('nervous',"Oof! 💥");face.style.transform='scaleX(-1)';el.style.transition='left 0.8s ease-out';setBrixbyPos(20);setTimeout(()=>{face.style.transform='scaleX(1)';el.style.transition='left 0.6s ease-out';setBrixbyPos(window.innerWidth-100);setTimeout(()=>{el.style.left='auto';el.style.right='20px';el.style.transition='none';brixbyX=window.innerWidth-100;face.style.transform='';brixbyWalking=false;brixbyActionLock=false;},700);},900);},500);}
 function mascotTap(){
   sfx.click();
   const taps=[
+    
     ()=>{setMascotMood('happy',"I'm Brixby! 👋");mascotWave();},
     ()=>{setMascotMood('excited',"You're doing great!");brixbyJump(3);},
     ()=>{brixbyDance();setMascotMood('happy',"Dance break! 🕺");},
@@ -672,6 +687,11 @@ function mascotTap(){
     ()=>{brixbyPeek();},
     ()=>{brixbyDizzy();},
     ()=>{brixbyVibrate();},
+    ()=>{brixbyBackflip();},
+    ()=>{brixbyMoonwalk();},
+    ()=>{brixbyShrinkGrow();},
+    ()=>{brixbyFloat();},
+    ()=>{brixbyBounceWall();},
   ];
   taps[Math.floor(Math.random()*taps.length)]();
 }
