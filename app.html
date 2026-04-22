@@ -578,7 +578,8 @@ function resetQuiz(){
 }
 
 /* ── MASCOT ── */
-let mascotTimer=null,mascotBounceTimer=null,idleTimer=null;
+let mascotTimer=null,mascotBounceTimer=null,idleTimer=null,actionTimer=null;
+let brixbyX=null,brixbyDir=1,brixbyWalking=false,brixbyActionLock=false;
 const mascotMoods={idle:{mouth:'M25 30 Q32 35 39 30',pupils:[1,1],blush:0},happy:{mouth:'M23 29 Q32 37 41 29',pupils:[0,0],blush:0.5},excited:{mouth:'M22 28 Q32 38 42 28',pupils:[-1,-1],blush:0.8},thinking:{mouth:'M26 31 Q32 31 38 31',pupils:[2,2],blush:0},nervous:{mouth:'M26 32 Q32 29 38 32',pupils:[0,0],blush:0.3},celebrate:{mouth:'M22 28 Q32 38 42 28',pupils:[-1,-1],blush:1},sad:{mouth:'M25 33 Q32 28 39 33',pupils:[2,2],blush:0}};
 
 function setMascotMood(mood,message,duration){
