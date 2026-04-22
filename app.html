@@ -611,16 +611,30 @@ function mascotWave(){
 function startIdleAnimation(){
   clearInterval(idleTimer);
   idleTimer=setInterval(()=>{
+    if(brixbyActionLock||brixbyWalking)return;
     const pL=document.getElementById('pupilL'),pR=document.getElementById('pupilR');
-    if(!pL) return;
-    const dx=(Math.random()-0.5)*2,dy=(Math.random()-0.5)*2;
-    pL.setAttribute('cx',25+dx);pL.setAttribute('cy',21+dy);
-    pR.setAttribute('cx',41+dx);pR.setAttribute('cy',21+dy);
-    if(Math.random()<0.15){
-      const eL=document.querySelector('#eyeL'),eR=document.querySelector('#eyeR');
-      if(eL){eL.setAttribute('ry','1');eR.setAttribute('ry','1');setTimeout(()=>{eL.setAttribute('ry','5');eR.setAttribute('ry','5');},120);}
-    }
-  },2000);
+    if(Math.random()<0.15){const eL=document.querySelector('#eyeL'),eR=document.querySelector('#eyeR');if(eL){eL.setAttribute('ry','1');eR.setAttribute('ry','1');setTimeout(()=>{eL.setAttribute('ry','5');eR.setAttribute('ry','5');},120);}}
+    if(pL&&Math.random()<0.3){const dx=(Math.random()-0.5)*3,dy=(Math.random()-0.5)*2;pL.setAttribute('cx',25+dx);pL.setAttribute('cy',21+dy);pR.setAttribute('cx',41+dx);pR.setAttribute('cy',21+dy);}
+  },1800);
+  clearInterval(actionTimer);
+  actionTimer=setInterval(()=>{
+    if(brixbyActionLock||brixbyWalking)return;
+    const roll=Math.random();
+    if(roll<0.18){brixbyWalk((Math.random()-0.5)*400,1400);}
+    else if(roll<0.28){brixbyLookAround();}
+    else if(roll<0.35){brixbyTrip();}
+    else if(roll<0.42){brixbyRunOff();}
+    else if(roll<0.49){brixbySpin();setMascotMood('excited',"Wheee! 😵‍💫");}
+    else if(roll<0.54){mascotWave();setMascotMood('happy',['Hey there! 👋','Learning is fun!','You got this! 💪','Hi friend! 😊'][Math.floor(Math.random()*4)]);}
+    else if(roll<0.59){brixbyJump(2);setMascotMood('excited',['Boing! 🐸','Woo! ⭐','Jump around! 🎉'][Math.floor(Math.random()*3)]);}
+    else if(roll<0.64){brixbySit();}
+    else if(roll<0.69){brixbyScratch();}
+    else if(roll<0.74){brixbyYawn();}
+    else if(roll<0.79){brixbyStretch();}
+    else if(roll<0.83){brixbyNervousShake();}
+    else if(roll<0.87){brixbyPeek();}
+    else if(roll<0.91){brixbyDizzy();}
+  },5000);
 }
 function brixbySit(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('idle',"Taking a break... 😌");let t=0;const sit=setInterval(()=>{t+=0.08;const squat=Math.min(t,1);face.style.transform=`scaleY(${1-squat*0.2}) scaleX(${1+squat*0.15}) translateY(${squat*8}px)`;if(t>=1){clearInterval(sit);setTimeout(()=>{let t2=0;const stand=setInterval(()=>{t2+=0.08;const rise=Math.min(t2,1);face.style.transform=`scaleY(${0.8+rise*0.2}) scaleX(${1.15-rise*0.15}) translateY(${(1-rise)*8}px)`;if(t2>=1){clearInterval(stand);face.style.transform='';brixbyActionLock=false;}},30);},3000);}},30);}
 function brixbyScratch(){if(brixbyActionLock)return;brixbyActionLock=true;const armR=document.getElementById('armR');const face=getFaceEl();setMascotMood('thinking',"Hmm... 🤔");let t=0;const scratch=setInterval(()=>{t+=0.4;if(armR)armR.setAttribute('transform',`rotate(${-60+Math.sin(t*3)*15},45,33)`);face.style.transform=`rotate(${Math.sin(t)*3}deg)`;if(t>8){clearInterval(scratch);if(armR)armR.setAttribute('transform','');face.style.transform='';brixbyActionLock=false;}},30);}
@@ -641,7 +655,7 @@ function brixbyDance(){const face=getFaceEl();const armL=document.getElementById
 function brixbyTrip(){const face=getFaceEl();if(!face||brixbyActionLock)return;brixbyActionLock=true;setMascotMood('nervous','Whoa! 😵');let t=0;const trip=setInterval(()=>{t+=0.15;face.style.transform=`rotate(${Math.min(t*60,90)}deg) translateY(${t*8}px)`;if(t>=1.5){clearInterval(trip);setTimeout(()=>{face.style.transform='';setMascotMood('happy','I meant to do that! 😄');brixbyActionLock=false;},800);}},30);}
 function brixbyRunOff(){if(brixbyActionLock||brixbyWalking)return;brixbyActionLock=true;const el=getMascotEl();const face=getFaceEl();if(brixbyX===null)brixbyX=window.innerWidth-100;setMascotMood('excited','BRB! 🏃');face.style.transform='scaleX(1)';el.style.transition='left 0.6s ease-in';setBrixbyPos(window.innerWidth+100);setTimeout(()=>{el.style.transition='none';setBrixbyPos(-100);face.style.transform='scaleX(1)';setTimeout(()=>{el.style.transition='left 0.8s ease-out';setBrixbyPos(window.innerWidth-100);setTimeout(()=>{el.style.left='auto';el.style.right='20px';el.style.transition='none';brixbyX=window.innerWidth-100;face.style.transform='';setMascotMood('happy',"I'm back! 😄");brixbyActionLock=false;},900);},100);},700);}
 function brixbyLookAround(){const pL=document.getElementById('pupilL');const pR=document.getElementById('pupilR');if(!pL)return;const positions=[[-2,0],[2,0],[0,-1],[0,1],[-2,-1],[2,1],[0,0]];let i=0;const look=setInterval(()=>{const p=positions[i%positions.length];pL.setAttribute('cx',25+p[0]);pL.setAttribute('cy',21+p[1]);pR.setAttribute('cx',41+p[0]);pR.setAttribute('cy',21+p[1]);i++;if(i>=positions.length){clearInterval(look);}},200);}
-  
+function mascotTap(){
   sfx.click();
   const taps=[
     ()=>{setMascotMood('happy',"I'm Brixby! 👋");mascotWave();},
