@@ -621,12 +621,34 @@ function startIdleAnimation(){
     }
   },2000);
 }
+function brixbySit(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('idle',"Taking a break... 😌");let t=0;const sit=setInterval(()=>{t+=0.08;const squat=Math.min(t,1);face.style.transform=`scaleY(${1-squat*0.2}) scaleX(${1+squat*0.15}) translateY(${squat*8}px)`;if(t>=1){clearInterval(sit);setTimeout(()=>{let t2=0;const stand=setInterval(()=>{t2+=0.08;const rise=Math.min(t2,1);face.style.transform=`scaleY(${0.8+rise*0.2}) scaleX(${1.15-rise*0.15}) translateY(${(1-rise)*8}px)`;if(t2>=1){clearInterval(stand);face.style.transform='';brixbyActionLock=false;}},30);},3000);}},30);}
+function brixbyScratch(){if(brixbyActionLock)return;brixbyActionLock=true;const armR=document.getElementById('armR');const face=getFaceEl();setMascotMood('thinking',"Hmm... 🤔");let t=0;const scratch=setInterval(()=>{t+=0.4;if(armR)armR.setAttribute('transform',`rotate(${-60+Math.sin(t*3)*15},45,33)`);face.style.transform=`rotate(${Math.sin(t)*3}deg)`;if(t>8){clearInterval(scratch);if(armR)armR.setAttribute('transform','');face.style.transform='';brixbyActionLock=false;}},30);}
+function brixbyYawn(){if(brixbyActionLock)return;brixbyActionLock=true;const mouth=document.getElementById('mascotMouth');const face=getFaceEl();setMascotMood('idle',"*yawn* 😴");let t=0;const yawn=setInterval(()=>{t+=0.05;const open=Math.sin(t*Math.PI);if(mouth)mouth.setAttribute('d',`M23 29 Q32 ${35+open*8} 41 29`);face.style.transform=`translateY(${Math.sin(t*Math.PI)*-3}px) rotate(${Math.sin(t*Math.PI)*5}deg)`;if(t>=1){clearInterval(yawn);if(mouth)mouth.setAttribute('d','M25 30 Q32 35 39 30');face.style.transform='';brixbyActionLock=false;}},40);}
+function brixbyStretch(){if(brixbyActionLock)return;brixbyActionLock=true;const armL=document.getElementById('armL');const armR=document.getElementById('armR');const face=getFaceEl();setMascotMood('happy',"Stretching! 🙆");let t=0;const stretch=setInterval(()=>{t+=0.05;const ext=Math.sin(t*Math.PI);if(armL)armL.setAttribute('transform',`rotate(${-ext*50},19,33)`);if(armR)armR.setAttribute('transform',`rotate(${ext*50},45,33)`);face.style.transform=`scaleY(${1+ext*0.1}) translateY(${-ext*4}px)`;if(t>=1){clearInterval(stretch);if(armL)armL.setAttribute('transform','');if(armR)armR.setAttribute('transform','');face.style.transform='';brixbyActionLock=false;}},30);}
+function brixbyNervousShake(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('nervous',"Eek! 😬");let t=0;const shake=setInterval(()=>{t+=0.8;face.style.transform=`translateX(${Math.sin(t)*5}px)`;if(t>12){clearInterval(shake);face.style.transform='';brixbyActionLock=false;}},20);}
+function brixbyPeek(){if(brixbyActionLock)return;brixbyActionLock=true;const el=getMascotEl();setMascotMood('happy',"Peek-a-boo! 👀");el.style.transition='bottom 0.4s ease';el.style.bottom='-60px';setTimeout(()=>{el.style.bottom='20px';setTimeout(()=>{el.style.transition='';brixbyActionLock=false;},400);},1200);}
+function brixbyDizzy(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();const pL=document.getElementById('pupilL');const pR=document.getElementById('pupilR');setMascotMood('nervous',"Dizzy... 😵");let t=0;const dizzy=setInterval(()=>{t+=0.15;face.style.transform=`rotate(${Math.sin(t)*20}deg)`;if(pL){pL.setAttribute('cx',25+Math.cos(t)*2);pL.setAttribute('cy',21+Math.sin(t)*2);}if(pR){pR.setAttribute('cx',41+Math.cos(t+Math.PI)*2);pR.setAttribute('cy',21+Math.sin(t+Math.PI)*2);}if(t>8){clearInterval(dizzy);face.style.transform='';if(pL){pL.setAttribute('cx',25);pL.setAttribute('cy',21);}if(pR){pR.setAttribute('cx',41);pR.setAttribute('cy',21);}brixbyActionLock=false;}},30);}
+function brixbyVibrate(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('excited',"So excited!! 🎉");let t=0;const vib=setInterval(()=>{t+=1;face.style.transform=`translate(${(Math.random()-0.5)*6}px,${(Math.random()-0.5)*6}px) scale(1.05)`;if(t>20){clearInterval(vib);face.style.transform='';brixbyActionLock=false;}},40);}
 
 function mascotTap(){
   sfx.click();
-  const taps=[['happy',"I'm Brixby! 👋"],['excited',"You're doing great!"],['happy',"Learning is fun!"],['excited',"I believe in you!"]];
-  const t=taps[Math.floor(Math.random()*taps.length)];
-  setMascotMood(t[0],t[1]);mascotWave();
+  const taps=[
+    ()=>{setMascotMood('happy',"I'm Brixby! 👋");mascotWave();},
+    ()=>{setMascotMood('excited',"You're doing great!");brixbyJump(3);},
+    ()=>{brixbyDance();setMascotMood('happy',"Dance break! 🕺");},
+    ()=>{brixbyTrip();},
+    ()=>{brixbyRunOff();},
+    ()=>{brixbySpin();setMascotMood('excited',"Wheee! 😵‍💫");},
+    ()=>{brixbySit();},
+    ()=>{brixbyScratch();},
+    ()=>{brixbyYawn();},
+    ()=>{brixbyStretch();},
+    ()=>{brixbyNervousShake();},
+    ()=>{brixbyPeek();},
+    ()=>{brixbyDizzy();},
+    ()=>{brixbyVibrate();},
+  ];
+  taps[Math.floor(Math.random()*taps.length)]();
 }
 
 const mascotPageMoods={pageSetup:['happy',"Hi! I'm Brixby 👋"],pageLoading:['thinking',"Hmm, let me think…"],pageLesson:['excited',"Your lesson is ready!"],pageGameLoading:['nervous',"Game time soon… 😬"],pageGame:['excited',"Let's go! 🎮"],pageAnalytics:['celebrate',"Great session! 📊"],pageParentLoading:['thinking',"Writing a note…"],pageParent:['happy',"See you next time! 🎉"]};
