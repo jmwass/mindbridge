@@ -634,7 +634,7 @@ function startIdleAnimation(){
     else if(roll<0.83){brixbyNervousShake();}
     else if(roll<0.87){brixbyPeek();}
     else if(roll<0.91){brixbyDizzy();}
-  },5000);
+  },10000);
 }
 function brixbySit(){if(brixbyActionLock)return;brixbyActionLock=true;const face=getFaceEl();setMascotMood('idle',"Taking a break... 😌");let t=0;const sit=setInterval(()=>{t+=0.08;const squat=Math.min(t,1);face.style.transform=`scaleY(${1-squat*0.2}) scaleX(${1+squat*0.15}) translateY(${squat*8}px)`;if(t>=1){clearInterval(sit);setTimeout(()=>{let t2=0;const stand=setInterval(()=>{t2+=0.08;const rise=Math.min(t2,1);face.style.transform=`scaleY(${0.8+rise*0.2}) scaleX(${1.15-rise*0.15}) translateY(${(1-rise)*8}px)`;if(t2>=1){clearInterval(stand);face.style.transform='';brixbyActionLock=false;}},30);},3000);}},30);}
 function brixbyScratch(){if(brixbyActionLock)return;brixbyActionLock=true;const armR=document.getElementById('armR');const face=getFaceEl();setMascotMood('thinking',"Hmm... 🤔");let t=0;const scratch=setInterval(()=>{t+=0.4;if(armR)armR.setAttribute('transform',`rotate(${-60+Math.sin(t*3)*15},45,33)`);face.style.transform=`rotate(${Math.sin(t)*3}deg)`;if(t>8){clearInterval(scratch);if(armR)armR.setAttribute('transform','');face.style.transform='';brixbyActionLock=false;}},30);}
